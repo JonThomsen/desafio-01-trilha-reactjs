@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import '../styles/tasklist.scss'
 
@@ -16,14 +16,53 @@ export function TaskList() {
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
-  }
+    
+    //const updateTasks = Array.from<Task>(tasks);
+    //  if (newTaskTitle) {
+    //    updateTasks.push({ id: tasks.length, title: newTaskTitle, isComplete: false });
+    //    setTasks(updateTasks);
+    //  }
 
+    //se negar o texto, e der false, assim impedirá o resto da execução do código
+    if (!newTaskTitle) return;
+
+    const newTask = {
+      id: Math.random(),
+      title: newTaskTitle,
+      isComplete: false
+    }
+
+    //setState pode ser usado em forma de callbacks
+    //em vários casos de renderização, como useEffect por exemplo,
+    //ao dar o set e tentar usar o valor antigo pode estar desatualizado
+    //com callback podemos pegar o valor antigo
+    setTasks(oldState => [...oldState, newTask]);
+    setNewTaskTitle('');
+  }
+ 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    
+    //se for === retornar a task editada, caso contrário a mesma
+    const tasksToogleCompletion = tasks.map(task => task.id === id ? {
+      ...task,
+      //pegando as demais propriedades e sobrescrevendo apenas isComplete
+      isComplete: !task.isComplete
+    } : task)
+
+    setTasks(tasksToogleCompletion);
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+    
+    //const updateTasks = Array.from(tasks);
+    //updateTasks.splice(id, 1);
+    //setTasks(updateTasks);
+
+    //retornar todos os outros itens menos o do id passado
+    const filteredTasks = tasks.filter(task => task.id !== id);
+    setTasks(filteredTasks);
   }
 
   return (
